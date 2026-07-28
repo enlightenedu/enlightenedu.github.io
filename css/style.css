@@ -722,6 +722,11 @@ body {
     gap: 28px;
 }
 
+a.news-card, a.home-news-card {
+    text-decoration: none;
+    color: inherit;
+    display: block;
+}
 .home-news-card {
     cursor: pointer;
 }

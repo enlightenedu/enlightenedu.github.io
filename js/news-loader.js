@@ -104,7 +104,7 @@ var NewsLoader = (function () {
             (article.image ? '<div class="news-card-image"><img src="' + article.image + '" alt="' + article.title + '" loading="lazy"></div>' : '') +
             '<div class="news-card-body">' +
             '<span class="news-card-category ' + categoryClass + '">' + article.category + '</span>' +
-            '<h3 class="news-card-title"><a href="javascript:void(0)" onclick="NewsLoader.openDetail(\'' + article.slug + '\')">' + article.title + '</a></h3>' +
+            '<h3 class="news-card-title"><a href="#' + encodeURIComponent(article.slug) + '">' + article.title + '</a></h3>' +
             '<p class="news-card-summary">' + (article.summary || '') + '</p>' +
             '<span class="news-card-date">' + formatDate(article.date) + '</span>' +
             '</div>' +
@@ -124,6 +124,11 @@ var NewsLoader = (function () {
         loadNewsIndex(function () {
             renderListPage();
             setupFilters();
+            // 支持 URL hash 自动打开详情
+            var hash = window.location.hash.slice(1);
+            if (hash) {
+                try { openDetail(decodeURIComponent(hash)); } catch(e) {}
+            }
         });
     }
 
@@ -210,21 +215,14 @@ var NewsLoader = (function () {
             }
 
             container.innerHTML = recent.map(function (article) {
-                var safeSlug = article.slug.replace(/'/g, "\\'");
                 return '' +
-                    '<div class="news-card home-news-card" data-slug="' + article.slug + '" style="cursor:pointer;">' +
+                    '<a href="news.html#' + encodeURIComponent(article.slug) + '" class="news-card home-news-card">' +
                     '<span class="news-card-category">' + article.category + '</span>' +
                     '<h3>' + article.title + '</h3>' +
                     '<p class="news-card-summary">' + (article.summary || '') + '</p>' +
                     '<span class="news-card-date">' + formatDate(article.date) + '</span>' +
-                    '</div>';
+                    '</a>';
             }).join('');
-            // 使用事件委托，避免 onclick 中文字符问题
-            container.querySelectorAll('.home-news-card').forEach(function(card) {
-                card.addEventListener('click', function() {
-                    NewsLoader.openDetail(card.getAttribute('data-slug'));
-                });
-            });
 
             // 添加"查看全部"链接
             container.innerHTML += '' +
@@ -244,6 +242,10 @@ var NewsLoader = (function () {
         var article = allNews.filter(function(a) { return a.slug === slug; })[0];
         if (!article) { return; }
 
+        // 同步 hash 到地址栏
+        if (window.location.hash.slice(1) !== slug) {
+            history.replaceState(null, '', '#' + encodeURIComponent(slug));
+        }
         modal.classList.add('active');
         document.body.style.overflow = 'hidden';
 
@@ -265,6 +267,10 @@ var NewsLoader = (function () {
             modal.classList.remove('active');
         }
         document.body.style.overflow = '';
+        // 清除 hash
+        if (window.location.hash) {
+            history.replaceState(null, '', window.location.pathname);
+        }
     }
 
     // ========== 弹窗关闭事件 ==========
@@ -282,10 +288,16 @@ var NewsLoader = (function () {
         });
     }
 
-    // 初始化弹窗
+    // 初始化弹窗 + hash 变化监听
     if (typeof document !== 'undefined') {
         document.addEventListener('DOMContentLoaded', function () {
             setupModal();
+        });
+        window.addEventListener('hashchange', function () {
+            var hash = window.location.hash.slice(1);
+            if (hash) {
+                try { openDetail(decodeURIComponent(hash)); } catch(e) {}
+            }
         });
     }
 
