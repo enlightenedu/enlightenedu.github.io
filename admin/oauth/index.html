@@ -2,77 +2,68 @@
 <html lang="en">
 <head><meta charset="utf-8"><title>OAuth</title></head>
 <body>
-<pre id="log" style="font-size:13px;padding:20px;"></pre>
 <script>
 (function() {
-  var el = document.getElementById('log');
-  function log(msg) { el.textContent += msg + '\n'; }
-
   var CLIENT_ID = 'Ov23li9xWJ3xRpRROBL4';
   var CLIENT_SECRET = atob('MGY5YzY3MjJlNjY2ZWU5ZWE3NDhkNjljOTVjZTg3ZjUzZmI4YzQ4NQ==');
 
+  // === AUTH: redirect to GitHub ===
   var hash = location.hash.replace(/^#/, '');
   if (hash.startsWith('/auth')) {
-    log('[AUTH] Starting...');
     var hp = new URLSearchParams(hash.slice(hash.indexOf('?') + 1));
-    var scope = hp.get('scope') || 'repo';
-    var siteId = hp.get('site_id') || '';
     var redirectUri = location.origin + location.pathname;
-    log('[AUTH] redirect_uri: ' + redirectUri);
     location.href = 'https://github.com/login/oauth/authorize?' + new URLSearchParams({
       client_id: CLIENT_ID,
-      scope: scope,
+      scope: hp.get('scope') || 'repo',
       redirect_uri: redirectUri,
-      state: siteId
+      state: hp.get('site_id') || ''
     });
     return;
   }
 
+  // === CALLBACK: exchange code for token ===
   var qp = new URLSearchParams(location.search);
   var code = qp.get('code');
-  if (code) {
-    log('[CALLBACK] Got code: ' + code.slice(0,8) + '...');
-    log('[CALLBACK] Exchanging for token via corsproxy.io...');
-    fetch('https://corsproxy.io/?' + encodeURIComponent(
-      'https://github.com/login/oauth/access_token'
-    ), {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/x-www-form-urlencoded',
-        'Accept': 'application/json'
-      },
-      body: new URLSearchParams({
-        client_id: CLIENT_ID,
-        client_secret: CLIENT_SECRET,
-        code: code,
-        state: qp.get('state') || ''
-      })
-    }).then(function(r) { return r.json(); }).then(function(data) {
-      log('[CALLBACK] Response: ' + JSON.stringify(data).slice(0,200));
-      if (data.access_token) {
-        log('[CALLBACK] Token obtained! Sending to CMS...');
-        log('[CALLBACK] opener origin: ' + (window.opener ? window.opener.location.origin : 'NULL'));
-        if (window.opener) {
-          window.opener.postMessage({
-            token: data.access_token,
-            provider: 'github',
-            backendName: 'github'
-          }, '*');
-          log('[CALLBACK] postMessage sent! Closing in 1s...');
-          setTimeout(function() { window.close(); }, 1000);
-        } else {
-          log('[CALLBACK] ERROR: window.opener is null!');
-        }
-      } else {
-        log('[CALLBACK] ERROR: ' + JSON.stringify(data));
-      }
-    }).catch(function(e) {
-      log('[CALLBACK] NETWORK ERROR: ' + e.message);
-    });
+  if (!code) {
+    document.body.innerHTML = '<p style="text-align:center;margin-top:40px;">OAuth proxy ready.</p>';
     return;
   }
 
-  log('OAuth proxy ready. Waiting for auth request.');
+  fetch('https://corsproxy.io/?' + encodeURIComponent('https://github.com/login/oauth/access_token'), {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/x-www-form-urlencoded', 'Accept': 'application/json' },
+    body: new URLSearchParams({
+      client_id: CLIENT_ID, client_secret: CLIENT_SECRET,
+      code: code, state: qp.get('state') || ''
+    })
+  }).then(function(r) { return r.json(); }).then(function(data) {
+    if (!data.access_token) {
+      document.body.innerHTML = '<p style="color:red;">Token error: ' + JSON.stringify(data) + '</p>';
+      return;
+    }
+    // Send token via postMessage
+    if (window.opener) {
+      window.opener.postMessage({
+        token: data.access_token,
+        provider: 'github'
+      }, '*');
+    }
+    // Also store in localStorage for fallback
+    try {
+      localStorage.setItem('netlify-cms-user', JSON.stringify({
+        token: data.access_token,
+        provider: 'github',
+        backendName: 'github',
+        login: 'github-user',
+        email: 'github-user',
+        name: 'GitHub User'
+      }));
+    } catch(e) {}
+    document.body.innerHTML = '<div style="text-align:center;margin-top:60px;font-family:sans-serif;"><h2>登录成功！</h2><p style="color:#666;">如果后台没有自动跳转，请<a href="javascript:window.opener.location.reload();window.close();" style="color:#1a73e8;">点击这里刷新后台页面</a></p></div>';
+    setTimeout(function() { try { window.close(); } catch(e) {} }, 3000);
+  }).catch(function(e) {
+    document.body.innerHTML = '<p style="color:red;">Network error: ' + e.message + '</p>';
+  });
 })();
 </script>
 </body>
