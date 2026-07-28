@@ -4,7 +4,7 @@
 
 ## 访问地址
 
-**[https://enlightenedu.github.io/github.io/](https://enlightenedu.github.io/github.io/)**
+**[https://enlightenedu.github.io/](https://enlightenedu.github.io/)**
 
 ## 内容管理后台 (CMS)
 
@@ -12,7 +12,7 @@
 
 ### 后台地址
 
-**[https://enlightenedu.github.io/github.io/admin/](https://enlightenedu.github.io/github.io/admin/)**
+**[https://enlightenedu.github.io/admin/](https://enlightenedu.github.io/admin/)**
 
 ### 首次配置步骤
 
@@ -21,7 +21,7 @@
    - 点击 **New OAuth App**
    - 填写：
      - Application name: `启商智策 CMS`
-     - Homepage URL: `https://enlightenedu.github.io/github.io`
+     - Homepage URL: `https://enlightenedu.github.io`
      - Authorization callback URL: `https://decap-cms-oauth.netlify.app/callback`
    - 点击 **Register application**
    - 点击 **Generate a new client secret**
@@ -33,7 +33,7 @@
 
 3. **首次登录**
    - 保存后等待 ~1 分钟
-   - 访问 `https://enlightenedu.github.io/github.io/admin/`
+   - 访问 `https://enlightenedu.github.io/admin/`
    - 点击 **Login with GitHub**
    - 授权后即可进入后台
 

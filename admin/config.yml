@@ -1,14 +1,14 @@
 backend:
   name: github
-  repo: enlightenedu/github.io
+  repo: enlightenedu/enlightenedu.github.io
   branch: main
-  base_url: https://enlightenedu.github.io/github.io/admin/oauth/index.html#
+  base_url: https://enlightenedu.github.io/admin/oauth/index.html#
 
 media_folder: "images/uploads"
-public_folder: "/github.io/images/uploads"
+public_folder: "/images/uploads"
 
-site_url: https://enlightenedu.github.io/github.io
-display_url: https://enlightenedu.github.io/github.io
+site_url: https://enlightenedu.github.io
+display_url: https://enlightenedu.github.io
 
 locale: "zh_Hans"
 
