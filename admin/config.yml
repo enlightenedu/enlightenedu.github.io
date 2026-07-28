@@ -2,8 +2,7 @@ backend:
   name: github
   repo: enlightenedu/github.io
   branch: main
-  auth_type: pkce
-  client_id: Ov23li9xWJ3xRpRROBL4
+  base_url: https://decap-cms-oauth.netlify.app
 
 media_folder: "images/uploads"
 public_folder: "/github.io/images/uploads"
@@ -20,7 +19,7 @@ collections:
     folder: "content/news"
     create: true
     slug: "{{year}}-{{month}}-{{day}}-{{slug}}"
-    summary: "{{title}} - {{date}}"
+    summary: "{{title}} — {{date}}"
     sortable_fields: ["date", "title"]
     editor:
       preview: false
