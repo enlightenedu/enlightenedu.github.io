@@ -277,30 +277,34 @@
                 </div>
                 <div class="contact-form">
                     <h3>发送消息</h3>
-                    <form id="contactForm">
+                    <form id="contactForm" action="https://formsubmit.co/nian_zhedu@163.com" method="POST">
+                        <input type="hidden" name="_subject" value="启商智策官网 — 新咨询">
+                        <input type="hidden" name="_captcha" value="false">
+                        <input type="hidden" name="_template" value="table">
+                        <input type="hidden" name="_next" value="https://enlightenedu.github.io/github.io/#contact">
                         <div class="form-group">
-                            <input type="text" placeholder="您的姓名" required>
+                            <input type="text" name="name" placeholder="您的姓名" required>
                         </div>
                         <div class="form-group">
-                            <input type="email" placeholder="电子邮箱" required>
+                            <input type="email" name="email" placeholder="电子邮箱" required>
                         </div>
                         <div class="form-group">
-                            <input type="tel" placeholder="联系电话">
+                            <input type="tel" name="phone" placeholder="联系电话">
                         </div>
                         <div class="form-group">
-                            <select>
+                            <select name="service">
                                 <option value="">请选择咨询方向</option>
-                                <option value="management">企业管理咨询</option>
-                                <option value="industry">产业与区域发展规划</option>
-                                <option value="research">市场调查与行业研究</option>
-                                <option value="implementation">实施方案与政策研究</option>
-                                <option value="digital">数字化转型咨询</option>
-                                <option value="academic">社科研究与课题合作</option>
-                                <option value="other">其他</option>
+                                <option value="企业管理咨询">企业管理咨询</option>
+                                <option value="产业与区域发展规划">产业与区域发展规划</option>
+                                <option value="市场调查与行业研究">市场调查与行业研究</option>
+                                <option value="实施方案与政策研究">实施方案与政策研究</option>
+                                <option value="数字化转型咨询">数字化转型咨询</option>
+                                <option value="社科研究与课题合作">社科研究与课题合作</option>
+                                <option value="其他">其他</option>
                             </select>
                         </div>
                         <div class="form-group">
-                            <textarea rows="5" placeholder="请简要描述您的需求..." required></textarea>
+                            <textarea name="message" rows="5" placeholder="请简要描述您的需求..." required></textarea>
                         </div>
                         <button type="submit" class="btn btn-primary btn-block">提交咨询需求</button>
                     </form>

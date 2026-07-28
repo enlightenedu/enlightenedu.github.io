@@ -74,31 +74,19 @@ document.addEventListener('DOMContentLoaded', function () {
         });
     });
 
-    // Form submission
+    // Form submission - uses FormSubmit.co to send to email
     var contactForm = document.getElementById('contactForm');
     if (contactForm) {
         contactForm.addEventListener('submit', function (e) {
-            e.preventDefault();
-            // Get form data
-            var formData = new FormData(contactForm);
-            var data = {};
-            formData.forEach(function (value, key) {
-                data[key] = value;
-            });
-
-            // Simple feedback
             var submitBtn = contactForm.querySelector('button[type="submit"]');
             var originalText = submitBtn.textContent;
             submitBtn.textContent = '提交中...';
             submitBtn.disabled = true;
-
-            // Simulate submission (replace with actual form handling)
+            // Let the native form submit happen (to FormSubmit.co)
             setTimeout(function () {
-                alert('感谢您的咨询！我们会尽快与您联系。');
-                contactForm.reset();
                 submitBtn.textContent = originalText;
                 submitBtn.disabled = false;
-            }, 1000);
+            }, 3000);
         });
     }
 
