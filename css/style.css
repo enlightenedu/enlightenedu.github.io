@@ -81,12 +81,6 @@ body {
     text-decoration: none;
     display: flex;
     align-items: center;
-    gap: 12px;
-}
-
-.logo-icon {
-    height: 42px;
-    width: auto;
 }
 
 .logo-text {
@@ -1057,12 +1051,6 @@ body {
     gap: 48px;
     padding-bottom: 48px;
     border-bottom: 1px solid rgba(255, 255, 255, 0.1);
-}
-
-.footer-brand .footer-logo {
-    height: 50px;
-    width: auto;
-    margin-bottom: 16px;
 }
 
 .footer-brand h3 {
