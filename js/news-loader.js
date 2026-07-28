@@ -219,7 +219,6 @@ var NewsLoader = (function () {
                     '<a href="news.html#' + encodeURIComponent(article.slug) + '" class="news-card home-news-card">' +
                     '<span class="news-card-category">' + article.category + '</span>' +
                     '<h3>' + article.title + '</h3>' +
-                    '<p class="news-card-summary">' + (article.summary || '') + '</p>' +
                     '<span class="news-card-date">' + formatDate(article.date) + '</span>' +
                     '</a>';
             }).join('');
