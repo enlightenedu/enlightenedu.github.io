@@ -9,9 +9,12 @@
     </style>
 </head>
 <body>
+    <script>
+    // 阻止自动加载 config.yml，全部使用内联配置
+    window.CMS_MANUAL_INIT = true;
+    </script>
     <script src="https://unpkg.com/decap-cms@^3.0.0/dist/decap-cms.js"></script>
     <script>
-    // 直接初始化，使用内联配置替代 config.yml
     CMS.init({
         config: {
             backend: {
