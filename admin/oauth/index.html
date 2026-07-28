@@ -2,77 +2,77 @@
 <html lang="en">
 <head><meta charset="utf-8"><title>OAuth</title></head>
 <body>
+<pre id="log" style="font-size:13px;padding:20px;"></pre>
 <script>
-(async function() {
+(function() {
+  var el = document.getElementById('log');
+  function log(msg) { el.textContent += msg + '\n'; }
+
   var CLIENT_ID = 'Ov23li9xWJ3xRpRROBL4';
   var CLIENT_SECRET = atob('MGY5YzY3MjJlNjY2ZWU5ZWE3NDhkNjljOTVjZTg3ZjUzZmI4YzQ4NQ==');
 
-  // === AUTH: detect hash route from CMS ===
   var hash = location.hash.replace(/^#/, '');
   if (hash.startsWith('/auth')) {
+    log('[AUTH] Starting...');
     var hp = new URLSearchParams(hash.slice(hash.indexOf('?') + 1));
     var scope = hp.get('scope') || 'repo';
     var siteId = hp.get('site_id') || '';
-    // redirect_uri has NO fragment — GitHub uses query string for callback
     var redirectUri = location.origin + location.pathname;
-    var authUrl = 'https://github.com/login/oauth/authorize?' + new URLSearchParams({
+    log('[AUTH] redirect_uri: ' + redirectUri);
+    location.href = 'https://github.com/login/oauth/authorize?' + new URLSearchParams({
       client_id: CLIENT_ID,
       scope: scope,
       redirect_uri: redirectUri,
       state: siteId
     });
-    location.href = authUrl;
     return;
   }
 
-  // === CALLBACK: detect code in query string from GitHub ===
   var qp = new URLSearchParams(location.search);
   var code = qp.get('code');
   if (code) {
-    var state = qp.get('state');
-    var error = qp.get('error');
-    if (error) {
-      window.opener.postMessage({ error: 'auth_denied: ' + error }, '*');
-      window.close();
-      return;
-    }
-    try {
-      var resp = await fetch('https://corsproxy.io/?' + encodeURIComponent(
-        'https://github.com/login/oauth/access_token'
-      ), {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/x-www-form-urlencoded',
-          'Accept': 'application/json'
-        },
-        body: new URLSearchParams({
-          client_id: CLIENT_ID,
-          client_secret: CLIENT_SECRET,
-          code: code,
-          state: state || ''
-        })
-      });
-      var data = await resp.json();
+    log('[CALLBACK] Got code: ' + code.slice(0,8) + '...');
+    log('[CALLBACK] Exchanging for token via corsproxy.io...');
+    fetch('https://corsproxy.io/?' + encodeURIComponent(
+      'https://github.com/login/oauth/access_token'
+    ), {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/x-www-form-urlencoded',
+        'Accept': 'application/json'
+      },
+      body: new URLSearchParams({
+        client_id: CLIENT_ID,
+        client_secret: CLIENT_SECRET,
+        code: code,
+        state: qp.get('state') || ''
+      })
+    }).then(function(r) { return r.json(); }).then(function(data) {
+      log('[CALLBACK] Response: ' + JSON.stringify(data).slice(0,200));
       if (data.access_token) {
-        window.opener.postMessage({
-          token: data.access_token,
-          provider: 'github'
-        }, window.opener.location.origin);
-        setTimeout(function() { window.close(); }, 500);
+        log('[CALLBACK] Token obtained! Sending to CMS...');
+        log('[CALLBACK] opener origin: ' + (window.opener ? window.opener.location.origin : 'NULL'));
+        if (window.opener) {
+          window.opener.postMessage({
+            token: data.access_token,
+            provider: 'github',
+            backendName: 'github'
+          }, '*');
+          log('[CALLBACK] postMessage sent! Closing in 1s...');
+          setTimeout(function() { window.close(); }, 1000);
+        } else {
+          log('[CALLBACK] ERROR: window.opener is null!');
+        }
       } else {
-        window.opener.postMessage({
-          error: 'token_error: ' + JSON.stringify(data)
-        }, '*');
-        setTimeout(function() { window.close(); }, 500);
+        log('[CALLBACK] ERROR: ' + JSON.stringify(data));
       }
-    } catch (e) {
-      window.opener.postMessage({ error: 'network_error: ' + e.message }, '*');
-      setTimeout(function() { window.close(); }, 500);
-    }
+    }).catch(function(e) {
+      log('[CALLBACK] NETWORK ERROR: ' + e.message);
+    });
     return;
   }
 
-  document.body.innerHTML = '<p style="text-align:center;margin-top:40px;">OAuth proxy ready.</p>';
+  log('OAuth proxy ready. Waiting for auth request.');
 })();
 </script>
 </body>
