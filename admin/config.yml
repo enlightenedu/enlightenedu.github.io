@@ -66,3 +66,91 @@ collections:
         name: "body"
         widget: "markdown"
         hint: "新闻正文，支持 Markdown 格式"
+
+  # 网站配置（Hero + 页脚）
+  - name: "siteConfig"
+    label: "网站配置"
+    editor:
+      preview: false
+    files:
+      - label: "首页 Hero 和页脚"
+        name: "site-config"
+        file: "content/sections/site-config.json"
+        fields:
+          - label: "Hero 大标题"
+            name: "hero"
+            widget: "object"
+            fields:
+              - { label: "标题", name: "title", widget: "string" }
+              - { label: "副标题", name: "subtitle", widget: "string" }
+              - { label: "描述", name: "description", widget: "text" }
+              - { label: "主按钮文字", name: "btnPrimary", widget: "string" }
+              - { label: "次按钮文字", name: "btnSecondary", widget: "string" }
+          - label: "页脚"
+            name: "footer"
+            widget: "object"
+            fields:
+              - { label: "品牌名", name: "brandName", widget: "string" }
+              - { label: "标语", name: "tagline", widget: "string" }
+              - { label: "版权文字", name: "copyright", widget: "string" }
+
+  # 关于我们
+  - name: "aboutPage"
+    label: "关于我们"
+    editor:
+      preview: false
+    files:
+      - label: "关于我们内容"
+        name: "about"
+        file: "content/sections/about.json"
+        fields:
+          - { label: "标题", name: "heading", widget: "string" }
+          - { label: "副标题", name: "subtitle", widget: "string" }
+          - { label: "公司名称", name: "companyName", widget: "string" }
+          - label: "公司简介"
+            name: "intro"
+            widget: "list"
+            field: { label: "段落", name: "paragraph", widget: "text" }
+          - label: "数据统计"
+            name: "stats"
+            widget: "list"
+            fields:
+              - { label: "数字", name: "number", widget: "string" }
+              - { label: "标签", name: "label", widget: "string" }
+          - { label: "使命", name: "mission", widget: "text" }
+          - { label: "愿景", name: "vision", widget: "text" }
+          - { label: "价值观", name: "values", widget: "text" }
+      - label: "联系方式"
+        name: "contact"
+        file: "content/sections/contact.json"
+        fields:
+          - { label: "标题", name: "heading", widget: "string" }
+          - { label: "副标题", name: "subtitle", widget: "string" }
+          - { label: "地址", name: "address", widget: "string" }
+          - { label: "电话", name: "phone", widget: "string" }
+          - { label: "邮箱", name: "email", widget: "string" }
+          - { label: "工作时间", name: "hours", widget: "string" }
+
+  # 服务项目
+  - name: "servicesPage"
+    label: "服务项目"
+    editor:
+      preview: false
+    files:
+      - label: "服务项目内容"
+        name: "services"
+        file: "content/sections/services.json"
+        fields:
+          - { label: "标题", name: "heading", widget: "string" }
+          - { label: "副标题", name: "subtitle", widget: "string" }
+          - label: "服务列表"
+            name: "items"
+            widget: "list"
+            fields:
+              - { label: "图标(emoji)", name: "icon", widget: "string" }
+              - { label: "服务名称", name: "title", widget: "string" }
+              - { label: "服务描述", name: "description", widget: "text" }
+              - label: "子项"
+                name: "details"
+                widget: "list"
+                field: { label: "子项", name: "item", widget: "string" }

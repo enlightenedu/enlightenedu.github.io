@@ -103,29 +103,37 @@ document.addEventListener('DOMContentLoaded', function () {
     }
 
     // Scroll animations
-    var animatedElements = document.querySelectorAll('.service-card, .value-card, .advantage-item, .stat-item');
-
     var observerOptions = {
         threshold: 0.1,
         rootMargin: '0px 0px -50px 0px'
     };
 
-    var observer = new IntersectionObserver(function (entries) {
+    var animationObserver = new IntersectionObserver(function (entries) {
         entries.forEach(function (entry) {
             if (entry.isIntersecting) {
                 entry.target.style.opacity = '1';
                 entry.target.style.transform = 'translateY(0)';
-                observer.unobserve(entry.target);
+                animationObserver.unobserve(entry.target);
             }
         });
     }, observerOptions);
 
-    animatedElements.forEach(function (el) {
-        el.style.opacity = '0';
-        el.style.transform = 'translateY(30px)';
-        el.style.transition = 'all 0.6s cubic-bezier(0.25, 0.46, 0.45, 0.94)';
-        observer.observe(el);
-    });
+    function initScrollAnimations() {
+        var elements = document.querySelectorAll('.service-card, .value-card, .advantage-item, .stat-item');
+        elements.forEach(function (el) {
+            // 跳过已经动画化的
+            if (el.style.opacity === '1') return;
+            el.style.opacity = '0';
+            el.style.transform = 'translateY(30px)';
+            el.style.transition = 'all 0.6s cubic-bezier(0.25, 0.46, 0.45, 0.94)';
+            animationObserver.observe(el);
+        });
+    }
+
+    initScrollAnimations();
+
+    // 暴露全局函数，供 ContentLoader 重新渲染后调用
+    window.reinitAnimations = initScrollAnimations;
 
     // 初始化首页新闻模块
     if (typeof NewsLoader !== 'undefined') {
