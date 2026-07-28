@@ -240,52 +240,23 @@ var NewsLoader = (function () {
         var content = document.getElementById('newsModalContent');
         if (!modal || !content) return;
 
+        // 从已加载的索引中查找文章
+        var article = allNews.filter(function(a) { return a.slug === slug; })[0];
+        if (!article) { return; }
+
         modal.classList.add('active');
-        content.innerHTML = '<div class="news-loading"><p>加载中...</p></div>';
         document.body.style.overflow = 'hidden';
 
-        // 加载 markdown 文件（使用 filename 字段或 slug 构建路径）
-        var article = allNews.filter(function(a) { return a.slug === slug; })[0];
-        var filename = article ? article.filename : (slug + '.md');
-        var xhr = new XMLHttpRequest();
-        xhr.open('GET', NEWS_DIR + encodeURI(filename), true);
-        xhr.onload = function () {
-            if (xhr.status === 200) {
-                var text = xhr.responseText;
-                // 解析 frontmatter
-                var match = text.match(/^---\s*\n([\s\S]*?)\n---\s*\n([\s\S]*)$/);
-                var meta = {};
-                var bodyHtml = '';
+        var bodyHtml = article.body ? renderMarkdown(article.body) : '';
 
-                if (match) {
-                    // 解析 frontmatter
-                    match[1].split('\n').forEach(function (line) {
-                        var kv = line.match(/^(\w+):\s*(.*)$/);
-                        if (kv) {
-                            meta[kv[1]] = kv[2].trim().replace(/^["']|["']$/g, '');
-                        }
-                    });
-                    bodyHtml = renderMarkdown(match[2]);
-                } else {
-                    bodyHtml = renderMarkdown(text);
-                }
-
-                content.innerHTML = '' +
-                    '<div class="news-detail">' +
-                    '<span class="news-card-category">' + (meta.category || '') + '</span>' +
-                    '<h1 class="news-detail-title">' + (meta.title || '') + '</h1>' +
-                    '<p class="news-detail-date">' + formatDate(meta.date) + '</p>' +
-                    (meta.image ? '<img src="' + meta.image + '" alt="' + meta.title + '" class="news-detail-image">' : '') +
-                    '<div class="news-detail-body">' + bodyHtml + '</div>' +
-                    '</div>';
-            } else {
-                content.innerHTML = '<div class="news-empty"><p>文章加载失败，请稍后重试</p></div>';
-            }
-        };
-        xhr.onerror = function () {
-            content.innerHTML = '<div class="news-empty"><p>文章加载失败，请稍后重试</p></div>';
-        };
-        xhr.send();
+        content.innerHTML = '' +
+            '<div class="news-detail">' +
+            '<span class="news-card-category">' + (article.category || '') + '</span>' +
+            '<h1 class="news-detail-title">' + (article.title || '') + '</h1>' +
+            '<p class="news-detail-date">' + formatDate(article.date) + '</p>' +
+            (article.image ? '<img src="' + article.image + '" alt="' + article.title + '" class="news-detail-image">' : '') +
+            '<div class="news-detail-body">' + bodyHtml + '</div>' +
+            '</div>';
     }
 
     function closeDetail() {

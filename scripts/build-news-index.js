@@ -12,26 +12,26 @@ const OUTPUT_FILE = path.join(__dirname, '..', 'content', 'news.json');
 
 // 简易 YAML frontmatter 解析器（无需额外依赖）
 function parseFrontmatter(content) {
-    const match = content.match(/^---\s*\n([\s\S]*?)\n---\s*\n([\s\S]*)$/);
-    if (!match) return null;
+    // 统一换行符
+    content = content.replace(/\r\n/g, '\n');
+    // 按 --- 分割
+    const parts = content.split(/^---\s*$/m);
+    if (parts.length < 3 || parts[0].trim() !== '') return null;
 
-    const frontmatterStr = match[1];
-    const body = match[2];
+    const frontmatterStr = parts[1];
+    const body = parts.slice(2).join('---').trim();
     const data = {};
 
-    let currentKey = null;
     frontmatterStr.split('\n').forEach(line => {
         const kvMatch = line.match(/^(\w+):\s*(.*)$/);
         if (kvMatch) {
-            currentKey = kvMatch[1];
             let value = kvMatch[2].trim();
-            // 去掉引号
             value = value.replace(/^["']|["']$/g, '');
-            data[currentKey] = value;
+            data[kvMatch[1]] = value;
         }
     });
 
-    data.body = body.trim();
+    data.body = body;
     return data;
 }
 
@@ -66,7 +66,7 @@ try {
                 category: parsed.category || '公司新闻',
                 summary: parsed.summary || '',
                 image: parsed.image || '',
-                // 正文不存进 JSON 以控制文件大小，前端按需加载
+                body: parsed.body || ''
             });
             console.log(`  ✓ ${filename}: ${parsed.title}`);
         } else {
