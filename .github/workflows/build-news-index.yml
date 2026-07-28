@@ -1,0 +1,38 @@
+name: Build News Index
+
+on:
+  push:
+    paths:
+      - 'content/news/**/*.md'
+  workflow_dispatch:  # 允许手动触发
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write  # 允许写入仓库
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+
+      - name: Run news index builder
+        run: node scripts/build-news-index.js
+
+      - name: Commit updated news.json
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "github-actions[bot]@users.noreply.github.com"
+          git add content/news.json
+          if git diff --staged --quiet; then
+            echo "No changes to news.json"
+          else
+            git commit -m "Auto-update news.json [skip ci]"
+            git push
+            echo "news.json updated and pushed"
+          fi
