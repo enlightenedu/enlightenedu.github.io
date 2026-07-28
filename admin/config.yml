@@ -3,7 +3,7 @@ backend:
   repo: enlightenedu/github.io
   branch: main
   base_url: https://decap-cms-oauth.netlify.app
-  client_id: Ov23li9xWJ3xRpRROBL4  # ← 把这里替换成你的 GitHub OAuth App Client ID
+  client_id: a3e0f1bafa9feb5c95dc216b5ddfeb688cdba5be  # ← 把这里替换成你的 GitHub OAuth App Client ID
 
 # 媒体文件存储位置
 media_folder: "images/uploads"
