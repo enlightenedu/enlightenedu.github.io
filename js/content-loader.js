@@ -85,6 +85,13 @@ var ContentLoader = (function () {
         if (brandH3) brandH3.textContent = f.brandName;
         if (brandP) brandP.textContent = f.tagline;
         if (copyright) copyright.textContent = f.copyright;
+
+        // 微信公众号
+        var qrPlaceholder = document.querySelector('.footer-wechat');
+        if (qrPlaceholder && f.wechatQr) {
+            qrPlaceholder.innerHTML = '<img src="' + f.wechatQr + '" alt="微信公众号" style="width:120px;height:120px;object-fit:contain;border-radius:8px;">' +
+                (f.wechatName ? '<p style="margin-top:8px;font-size:0.82rem;color:rgba(255,255,255,0.55);">' + f.wechatName + '</p>' : '');
+        }
     }
 
     // ========== 更新关于我们 ==========

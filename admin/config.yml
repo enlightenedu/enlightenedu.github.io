@@ -56,6 +56,8 @@ collections:
               - { label: "品牌名", name: "brandName", widget: "string" }
               - { label: "标语", name: "tagline", widget: "string" }
               - { label: "版权文字", name: "copyright", widget: "string" }
+              - { label: "微信公众号名称", name: "wechatName", widget: "string", required: false, hint: "如：启商智策管理咨询" }
+              - { label: "微信公众号二维码", name: "wechatQr", widget: "image", required: false, hint: "上传公众号二维码图片" }
 
   - name: "aboutPage"
     label: "关于我们"
