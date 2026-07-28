@@ -2,7 +2,7 @@ backend:
   name: github
   repo: enlightenedu/github.io
   branch: main
-  base_url: https://decap-cms-oauth.netlify.app
+  base_url: https://enlightenedu.github.io/github.io/admin/oauth/index.html#
 
 media_folder: "images/uploads"
 public_folder: "/github.io/images/uploads"

@@ -1,0 +1,91 @@
+<!doctype html>
+<html lang="en">
+<head><meta charset="utf-8"><title>OAuth</title></head>
+<body>
+<script>
+(async function() {
+  var CLIENT_ID = 'Ov23li9xWJ3xRpRROBL4';
+  var CLIENT_SECRET = atob('MGY5YzY3MjJlNjY2ZWU5ZWE3NDhkNjljOTVjZTg3ZjUzZmI4YzQ4NQ==');
+
+  var hash = location.hash.replace(/^#/, '');
+  var qsIndex = hash.indexOf('?');
+  var route = qsIndex > -1 ? hash.slice(0, qsIndex) : hash;
+  var qs = qsIndex > -1 ? hash.slice(qsIndex + 1) : location.search.slice(1);
+  var params = new URLSearchParams(qs);
+
+  // === AUTH: redirect to GitHub ===
+  if (route === '/auth') {
+    var provider = params.get('provider') || 'github';
+    var siteId = params.get('site_id') || '';
+    var scope = params.get('scope') || 'repo';
+
+    var redirectUri = location.origin + location.pathname + '#/callback';
+    var authUrl = 'https://github.com/login/oauth/authorize?' + new URLSearchParams({
+      client_id: CLIENT_ID,
+      scope: scope,
+      redirect_uri: redirectUri,
+      state: siteId
+    });
+    location.href = authUrl;
+    return;
+  }
+
+  // === CALLBACK: exchange code for token ===
+  if (route === '/callback') {
+    var code = params.get('code');
+    var state = params.get('state');
+    var error = params.get('error');
+
+    if (error) {
+      window.opener.postMessage({ error: 'auth_denied: ' + error }, '*');
+      window.close();
+      return;
+    }
+    if (!code) {
+      document.body.innerHTML = '<p style="text-align:center;margin-top:40px;">Missing authorization code.</p>';
+      return;
+    }
+
+    try {
+      var resp = await fetch('https://corsproxy.io/?' + encodeURIComponent(
+        'https://github.com/login/oauth/access_token'
+      ), {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/x-www-form-urlencoded',
+          'Accept': 'application/json'
+        },
+        body: new URLSearchParams({
+          client_id: CLIENT_ID,
+          client_secret: CLIENT_SECRET,
+          code: code,
+          state: state || ''
+        })
+      });
+      var data = await resp.json();
+      if (data.access_token) {
+        window.opener.postMessage({
+          token: data.access_token,
+          provider: 'github',
+          backendName: 'github'
+        }, '*');
+        window.close();
+      } else {
+        window.opener.postMessage({
+          error: 'token_error: ' + JSON.stringify(data)
+        }, '*');
+        window.close();
+      }
+    } catch (e) {
+      window.opener.postMessage({ error: 'network_error: ' + e.message }, '*');
+      window.close();
+    }
+    return;
+  }
+
+  // fallback
+  document.body.innerHTML = '<p style="text-align:center;margin-top:40px;">OAuth proxy ready.</p>';
+})();
+</script>
+</body>
+</html>
