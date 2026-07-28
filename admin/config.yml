@@ -25,9 +25,7 @@ collections:
     create: true
     slug: "{{year}}-{{month}}-{{day}}-{{slug}}"
     summary: "{{title}} — {{date}}"
-    sortable_fields:
-      fields: ["date", "title"]
-      default: { field: "date", direction: "desc" }
+    sortable_fields: ["date", "title"]
     editor:
       preview: false
     fields:
