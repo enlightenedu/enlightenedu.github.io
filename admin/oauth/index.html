@@ -66,10 +66,9 @@
       if (data.access_token) {
         window.opener.postMessage({
           token: data.access_token,
-          provider: 'github',
-          backendName: 'github'
-        }, '*');
-        window.close();
+          provider: 'github'
+        }, window.opener.location.origin);
+        setTimeout(function() { window.close(); }, 500);
       } else {
         window.opener.postMessage({
           error: 'token_error: ' + JSON.stringify(data)
