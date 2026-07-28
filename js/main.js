@@ -1,4 +1,4 @@
-// 启商管理咨询 - 交互脚本
+// 启商智策管理咨询 - 交互脚本
 
 document.addEventListener('DOMContentLoaded', function () {
     // Navbar scroll effect
@@ -126,4 +126,9 @@ document.addEventListener('DOMContentLoaded', function () {
         el.style.transition = 'all 0.6s cubic-bezier(0.25, 0.46, 0.45, 0.94)';
         observer.observe(el);
     });
+
+    // 初始化首页新闻模块
+    if (typeof NewsLoader !== 'undefined') {
+        NewsLoader.initHomeModule('homeNewsGrid');
+    }
 });

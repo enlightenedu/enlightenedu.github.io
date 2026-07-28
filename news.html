@@ -1,0 +1,128 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="启商智策管理咨询 — 动态新闻与行业洞察">
+    <title>动态新闻 — 启商智策管理咨询</title>
+    <link rel="stylesheet" href="css/style.css">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+SC:wght@300;400;500;700&family=Playfair+Display:wght@400;600;700&display=swap" rel="stylesheet">
+</head>
+<body>
+    <!-- 导航栏 -->
+    <nav class="navbar scrolled" id="navbar">
+        <div class="container nav-container">
+            <a href="index.html" class="logo">
+                <span class="logo-text">启商智策<span class="logo-highlight">管理咨询</span></span>
+            </a>
+            <ul class="nav-menu" id="navMenu">
+                <li><a href="index.html" class="nav-link">首页</a></li>
+                <li><a href="index.html#about" class="nav-link">关于我们</a></li>
+                <li><a href="index.html#services" class="nav-link">服务项目</a></li>
+                <li><a href="index.html#advantages" class="nav-link">核心优势</a></li>
+                <li><a href="news.html" class="nav-link active">动态新闻</a></li>
+                <li><a href="index.html#contact" class="nav-link">联系我们</a></li>
+            </ul>
+            <div class="hamburger" id="hamburger">
+                <span></span><span></span><span></span>
+            </div>
+        </div>
+    </nav>
+
+    <!-- 页面标题 -->
+    <section class="page-header">
+        <div class="container">
+            <h1>动态新闻</h1>
+            <p>了解启商智策最新动态、行业洞察与案例分享</p>
+        </div>
+    </section>
+
+    <!-- 新闻列表 -->
+    <section class="section news-list-section">
+        <div class="container">
+            <!-- 分类筛选 -->
+            <div class="news-filters" id="newsFilters">
+                <button class="filter-btn active" data-category="all">全部</button>
+                <button class="filter-btn" data-category="公司新闻">公司新闻</button>
+                <button class="filter-btn" data-category="行业洞察">行业洞察</button>
+                <button class="filter-btn" data-category="案例分享">案例分享</button>
+                <button class="filter-btn" data-category="活动预告">活动预告</button>
+            </div>
+
+            <!-- 新闻卡片列表 -->
+            <div class="news-grid" id="newsGrid">
+                <div class="news-loading">
+                    <p>加载中...</p>
+                </div>
+            </div>
+
+            <!-- 加载更多 -->
+            <div class="news-load-more" id="newsLoadMore" style="display:none;">
+                <button class="btn btn-outline-dark" id="loadMoreBtn">加载更多</button>
+            </div>
+        </div>
+    </section>
+
+    <!-- 新闻详情弹窗 -->
+    <div class="news-modal-overlay" id="newsModal">
+        <div class="news-modal">
+            <button class="news-modal-close" id="newsModalClose">&times;</button>
+            <div class="news-modal-content" id="newsModalContent">
+                <div class="news-loading"><p>加载中...</p></div>
+            </div>
+        </div>
+    </div>
+
+    <!-- 页脚 -->
+    <footer class="footer">
+        <div class="container">
+            <div class="footer-grid">
+                <div class="footer-brand">
+                    <h3>启商智策管理咨询</h3>
+                    <p>赋能企业成长，驱动商业变革</p>
+                </div>
+                <div class="footer-links">
+                    <h4>快速链接</h4>
+                    <ul>
+                        <li><a href="index.html">首页</a></li>
+                        <li><a href="index.html#about">关于我们</a></li>
+                        <li><a href="index.html#services">服务项目</a></li>
+                        <li><a href="news.html">动态新闻</a></li>
+                        <li><a href="index.html#contact">联系我们</a></li>
+                    </ul>
+                </div>
+                <div class="footer-services">
+                    <h4>核心服务</h4>
+                    <ul>
+                        <li>战略规划咨询</li>
+                        <li>组织变革管理</li>
+                        <li>人力资源管理</li>
+                        <li>运营管理优化</li>
+                    </ul>
+                </div>
+                <div class="footer-qr">
+                    <h4>关注我们</h4>
+                    <div class="qr-placeholder">
+                        <span>微信公众号</span>
+                    </div>
+                </div>
+            </div>
+            <div class="footer-bottom">
+                <p>&copy; 2026 启商智策管理咨询 Qishang Consulting. All rights reserved.</p>
+            </div>
+        </div>
+    </footer>
+
+    <script src="js/news-loader.js"></script>
+    <script src="js/main.js"></script>
+    <script>
+        // 初始化新闻列表页
+        document.addEventListener('DOMContentLoaded', function () {
+            if (typeof NewsLoader !== 'undefined') {
+                NewsLoader.initListPage();
+            }
+        });
+    </script>
+</body>
+</html>

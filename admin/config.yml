@@ -1,0 +1,68 @@
+backend:
+  name: github
+  repo: enlightenedu/github.io
+  branch: main
+  base_url: https://decap-cms-oauth.netlify.app
+  # 下面这个 client_id 需要替换为你自己的 GitHub OAuth App Client ID
+  # 创建步骤见 README 或询问开发者
+  # auth_type: pkce  # 如果社区代理不支持，尝试 pkce 模式
+
+# 媒体文件存储位置
+media_folder: "images/uploads"
+public_folder: "/github.io/images/uploads"
+
+# 网站地址
+site_url: https://enlightenedu.github.io/github.io
+display_url: https://enlightenedu.github.io/github.io
+
+# 语言
+locale: "zh_Hans"
+
+# 集合定义
+collections:
+  - name: "news"
+    label: "动态新闻"
+    label_singular: "新闻"
+    folder: "content/news"
+    create: true
+    slug: "{{year}}-{{month}}-{{day}}-{{slug}}"
+    summary: "{{title}} — {{date}}"
+    sortable_fields:
+      fields: ["date", "title"]
+      default: { field: "date", direction: "desc" }
+    editor:
+      preview: false
+    fields:
+      - label: "标题"
+        name: "title"
+        widget: "string"
+        hint: "新闻标题，会显示在首页和新闻列表中"
+      - label: "发布日期"
+        name: "date"
+        widget: "datetime"
+        format: "YYYY-MM-DD"
+        date_format: "YYYY-MM-DD"
+        time_format: false
+        default: ""
+      - label: "分类"
+        name: "category"
+        widget: "select"
+        options:
+          - { label: "公司新闻", value: "公司新闻" }
+          - { label: "行业洞察", value: "行业洞察" }
+          - { label: "案例分享", value: "案例分享" }
+          - { label: "活动预告", value: "活动预告" }
+        default: "公司新闻"
+      - label: "摘要"
+        name: "summary"
+        widget: "text"
+        hint: "简短摘要，显示在新闻列表中（约 50-100 字）"
+      - label: "封面图片"
+        name: "image"
+        widget: "image"
+        required: false
+        hint: "可选，建议尺寸 800×400px"
+      - label: "正文"
+        name: "body"
+        widget: "markdown"
+        hint: "新闻正文，支持 Markdown 格式"
