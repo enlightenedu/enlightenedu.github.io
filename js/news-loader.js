@@ -210,14 +210,21 @@ var NewsLoader = (function () {
             }
 
             container.innerHTML = recent.map(function (article) {
+                var safeSlug = article.slug.replace(/'/g, "\\'");
                 return '' +
-                    '<div class="news-card home-news-card" data-slug="' + article.slug + '" onclick="NewsLoader.openDetail(\'' + article.slug + '\')" style="cursor:pointer;">' +
+                    '<div class="news-card home-news-card" data-slug="' + article.slug + '" style="cursor:pointer;">' +
                     '<span class="news-card-category">' + article.category + '</span>' +
                     '<h3>' + article.title + '</h3>' +
                     '<p class="news-card-summary">' + (article.summary || '') + '</p>' +
                     '<span class="news-card-date">' + formatDate(article.date) + '</span>' +
                     '</div>';
             }).join('');
+            // 使用事件委托，避免 onclick 中文字符问题
+            container.querySelectorAll('.home-news-card').forEach(function(card) {
+                card.addEventListener('click', function() {
+                    NewsLoader.openDetail(card.getAttribute('data-slug'));
+                });
+            });
 
             // 添加"查看全部"链接
             container.innerHTML += '' +
@@ -237,9 +244,11 @@ var NewsLoader = (function () {
         content.innerHTML = '<div class="news-loading"><p>加载中...</p></div>';
         document.body.style.overflow = 'hidden';
 
-        // 加载 markdown 文件
+        // 加载 markdown 文件（使用 filename 字段或 slug 构建路径）
+        var article = allNews.filter(function(a) { return a.slug === slug; })[0];
+        var filename = article ? article.filename : (slug + '.md');
         var xhr = new XMLHttpRequest();
-        xhr.open('GET', NEWS_DIR + slug + '.md', true);
+        xhr.open('GET', NEWS_DIR + encodeURI(filename), true);
         xhr.onload = function () {
             if (xhr.status === 200) {
                 var text = xhr.responseText;
